@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 # Get the current week's meeting topic from GLUG calendar
-# pip install requests markdown-analysis dateparser
 
 import requests
 from io import StringIO
@@ -28,6 +27,7 @@ else:
 
 by = f' by {row[2]}' if row[2] else ''
 msg = f"<strong>Reminder</strong> - Meeting today in Siebel 1302 @ 6pm: <strong>{row[1]}</strong>{by}"
+msgplain = f"Reminder - Meeting today in Siebel 1302 @ 6pm: {row[1]}{by}"
 print(f'Sending message: {msg}')
 
 # ----- Matrix -----
@@ -37,4 +37,18 @@ c = MatrixClient(homeserver)
 c.login_with_password(user, password)
 
 r = c.join_room(room)
-r.send_html(msg)
+# r.send_html(msg)
+r.client.api.send_message_event(
+    room_id=r.client.api.get_room_id(room),
+    event_type='m.room.message',
+    content={
+        "body": "@room foo",
+        "m.mentions": {
+            "room": True
+        },
+        "body": msgplain,
+        "format": "org.matrix.custom.html",
+        "formatted_body": msg,
+        "msgtype": "m.text"
+    }
+)
