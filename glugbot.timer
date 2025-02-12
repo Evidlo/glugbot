@@ -1,0 +1,10 @@
+[Unit]
+Description=glugbot
+
+[Timer]
+OnCalendar=daily
+OnStartupSec=60m
+Persistent=true
+
+[Install]
+WantedBy=timers.target

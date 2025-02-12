@@ -1,0 +1,10 @@
+[Unit]
+Description=glugbot
+After=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/home/evan/resources/venv3/bin/python3 /home/evan/resources/glugbot/glugbot.py
+
+[Install]
+WantedBy=multi-user.target
