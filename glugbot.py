@@ -27,7 +27,7 @@ else:
     print(f'No matching date found for {today}')
 
 by = f' by {row[2]}' if row[2] else ''
-msg = f"<strong>Reminder</strong> - Today's meeting at 6pm: <strong>{row[1]}</strong>{by}"
+msg = f"<strong>Reminder</strong> - Meeting today in Siebel 1302 @ 6pm: <strong>{row[1]}</strong>{by}"
 print(f'Sending message: {msg}')
 
 # ----- Matrix -----
