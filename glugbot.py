@@ -10,35 +10,37 @@ import sys
 
 from glugbot_secrets import *
 
-season = '2025s'
-url = f'https://raw.githubusercontent.com/gnulug/meetings/refs/heads/master/{season}/schedule.md'
+# ----- Parse schedule from GitHub -----
+today = datetime.now().date()
 
+season = 's' if today.month < 6 else 'f'
+semester = today.strftime(f'%Y{season}')
+url = f'https://raw.githubusercontent.com/gnulug/meetings/refs/heads/master/{semester}/schedule.md'
 md = requests.get(url).content
-
 md = MarkdownAnalyzer(StringIO(md.decode('utf8')))
-
 table = list(md.identify_tables().values())[0]
+rows = table[0]['rows']
 
-today = datetime.today().replace(hour=0, minute=0, second=0, microsecond=0)
-for row in table[0]['rows']:
-    if dateparser.parse(row[0]) == today:
+# check if any dates on the schedule are today
+for row in rows:
+    if dateparser.parse(row[0]).date() == today:
         break
 else:
     print(f'No matching date found for {today}')
     sys.exit()
 
-# author
+# generate presenter string
 if row[2] == '' or row[2] == 'N/A':
     by = ''
 else:
     by = f' by {row[2]}'
 
+# generate HTML and plaintext announcement
 msg = f"<strong>Reminder</strong> - Meeting today in Siebel 1302 @ 6pm: <strong>{row[1]}</strong>{by}"
-
 msgplain = f"Reminder - Meeting today in Siebel 1302 @ 6pm: {row[1]}{by}"
 print(f'Sending message: {msg}')
 
-# ----- Matrix -----
+# ----- Send over Matrix -----
 
 from matrix_client.client import MatrixClient
 c = MatrixClient(homeserver)
@@ -52,7 +54,7 @@ r.client.api.send_message_event(
     content={
         "body": "@room foo",
         "m.mentions": {
-            "room": True
+            "room": True # notify entire room
         },
         "body": msgplain,
         "format": "org.matrix.custom.html",
