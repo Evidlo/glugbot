@@ -6,6 +6,7 @@ from io import StringIO
 from mrkdwn_analysis import MarkdownAnalyzer
 import dateparser
 from datetime import datetime
+import sys
 
 from glugbot_secrets import *
 
@@ -24,9 +25,16 @@ for row in table[0]['rows']:
         break
 else:
     print(f'No matching date found for {today}')
+    sys.exit()
 
-by = f' by {row[2]}' if row[2] else ''
+# author
+if row[2] == '' or row[2] == 'N/A':
+    by = ''
+else:
+    by = f' by {row[2]}'
+
 msg = f"<strong>Reminder</strong> - Meeting today in Siebel 1302 @ 6pm: <strong>{row[1]}</strong>{by}"
+
 msgplain = f"Reminder - Meeting today in Siebel 1302 @ 6pm: {row[1]}{by}"
 print(f'Sending message: {msg}')
 
