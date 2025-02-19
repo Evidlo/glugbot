@@ -13,7 +13,7 @@ from glugbot_secrets import *
 # ----- Parse schedule from GitHub -----
 today = datetime.now().date()
 
-season = 's' if today.month < 6 else 'f'
+season = 's' if today.month < 9 else 'f'
 semester = today.strftime(f'%Y{season}')
 url = f'https://raw.githubusercontent.com/gnulug/meetings/refs/heads/master/{semester}/schedule.md'
 md = requests.get(url).content
