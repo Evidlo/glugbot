@@ -52,13 +52,12 @@ r.client.api.send_message_event(
     room_id=r.client.api.get_room_id(room),
     event_type='m.room.message',
     content={
-        "body": "@room foo",
+        "body": msgplain,
+        "formatted_body": msg,
+        "format": "org.matrix.custom.html",
         "m.mentions": {
             "room": True # notify entire room
         },
-        "body": msgplain,
-        "format": "org.matrix.custom.html",
-        "formatted_body": msg,
         "msgtype": "m.text"
     }
 )
