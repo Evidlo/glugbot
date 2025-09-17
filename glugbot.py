@@ -30,7 +30,7 @@ else:
     sys.exit()
 
 # generate presenter string
-if row[2] == '' or row[2] == 'N/A':
+if row[2].lower() in ('', 'n/a', 'na', '-'):
     by = ''
 else:
     by = f' by {row[2]}'
