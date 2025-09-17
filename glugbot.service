@@ -5,6 +5,8 @@ After=network-online.target
 [Service]
 Type=oneshot
 ExecStart=/home/evan/resources/glugbot/venv/bin/python3 /home/evan/resources/glugbot/glugbot.py
+Restart=on-failure
+RestartSec=120
 
 [Install]
 WantedBy=multi-user.target
