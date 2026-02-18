@@ -6,6 +6,7 @@ from io import StringIO
 from mrkdwn_analysis import MarkdownAnalyzer
 import dateparser
 from datetime import datetime
+import re
 import sys
 
 from glugbot_secrets import *
@@ -35,8 +36,18 @@ if row[2].lower() in ('', 'n/a', 'na', '-'):
 else:
     by = f' by {row[2]}'
 
+# ---- Parse room number from homepage ----
+url = 'https://lug.acm.illinois.edu'
+html = requests.get(url)
+match = re.findall(b'Location.*([0-9]{4}).*\\n', html.content)
+
+if len(match) == 1:
+    room = match[0].decode('utf8')
+else:
+    room = '[err]'
+
 # generate HTML and plaintext announcement
-msg = f"<strong>Reminder</strong> - Meeting today in Siebel 1302 @ 6pm: <strong>{row[1]}</strong>{by}"
+msg = f"<strong>Reminder</strong> - Meeting today in Siebel {room} @ 6pm: <strong>{row[1]}</strong>{by}"
 msgplain = f"Reminder - Meeting today in Siebel 1302 @ 6pm: {row[1]}{by}"
 print(f'Sending message: {msg}')
 
