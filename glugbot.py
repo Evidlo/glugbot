@@ -38,17 +38,15 @@ else:
 
 # ---- Parse room number from homepage ----
 url = 'https://lug.acm.illinois.edu'
-html = requests.get(url)
-match = re.findall(b'Location.*([0-9]{4}).*\\n', html.content)
-
-if len(match) == 1:
-    room = match[0].decode('utf8')
-else:
-    room = '[err]'
+html = requests.get(url).content.decode('utf8')
+match = re.findall(r'Location.*([0-9]{4}).*\n', html)
+room = match[0] if len(match) == 1 else '[err]'
+match = re.findall(r'Time.*?([0-9:]+(?:-[0-9:]+)?\s*pm?)', html, flags=re.I)
+time = match[0] if len(match) == 1 else '[err]'
 
 # generate HTML and plaintext announcement
-msg = f"<strong>Reminder</strong> - Meeting today in Siebel {room} @ 6pm: <strong>{row[1]}</strong>{by}"
-msgplain = f"Reminder - Meeting today in Siebel 1302 @ 6pm: {row[1]}{by}"
+msg = f"<strong>Reminder</strong> - Meeting today in Siebel {room} @ {time}: <strong>{row[1]}</strong>{by}"
+msgplain = f"Reminder - Meeting today in Siebel {room} @ {time}: {row[1]}{by}"
 print(f'Sending message: {msg}')
 
 # ----- Send over Matrix -----
