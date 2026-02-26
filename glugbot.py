@@ -9,8 +9,6 @@ from datetime import datetime
 import re
 import sys
 
-from glugbot_secrets import *
-
 # ----- Parse schedule from GitHub -----
 today = datetime.now().date()
 
@@ -51,14 +49,16 @@ print(f'Sending message: {msg}')
 
 # ----- Send over Matrix -----
 
-from matrix_client.client import MatrixClient
-c = MatrixClient(homeserver)
-c.login_with_password(user, password)
+import glugbot_secrets as secrets
 
-r = c.join_room(room)
+from matrix_client.client import MatrixClient
+c = MatrixClient(secrets.homeserver)
+c.login_with_password(secrets.user, secrets.password)
+
+r = c.join_room(secrets.room)
 # r.send_html(msg)
 r.client.api.send_message_event(
-    room_id=r.client.api.get_room_id(room),
+    room_id=r.client.api.get_room_id(secrets.room),
     event_type='m.room.message',
     content={
         "body": msgplain,
